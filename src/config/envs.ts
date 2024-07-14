@@ -3,11 +3,13 @@ import * as joi from 'joi';
 
 interface EnvVars {
   PORT: number;
+  DATABASE_URL: string;
 }
 
 const envsSchema = joi
   .object({
     PORT: joi.number().default(4001),
+    DATABASE_URL: joi.string().required(),
   })
   .unknown(true);
 
