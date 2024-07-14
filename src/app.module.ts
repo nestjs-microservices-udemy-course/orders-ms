@@ -1,10 +1,20 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { LoggerModule } from 'nestjs-pino';
+import { prettyTarget } from './utils/pretty.target';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        autoLogging: true,
+        customAttributeKeys: {
+          req: 'request',
+          res: 'response',
+          err: 'error',
+        },
+        transport: { target: prettyTarget },
+      },
+    }),
+  ],
 })
 export class AppModule {}
