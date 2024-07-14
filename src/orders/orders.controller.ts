@@ -3,6 +3,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrdersService } from './orders.service';
 import { OrderPaginationDto } from 'src/common/dto';
+import { ChangeOrderStatusDto } from './dto/change-order-status.dto';
 
 @Controller()
 export class OrdersController {
@@ -23,9 +24,11 @@ export class OrdersController {
     return this.ordersService.findOne(id);
   }
 
-  // @MessagePattern('changeOrderStatus')
-  // update(@Payload() updateOrderDto: string) {
-  //   // return this.ordersService.changeStatus();
-  //   throw new Error('Not implemented');
-  // }
+  @MessagePattern('updateOrderStatus')
+  update(@Payload() changeOrderStatusDto: ChangeOrderStatusDto) {
+    return this.ordersService.changeStatus(
+      changeOrderStatusDto.id,
+      changeOrderStatusDto,
+    );
+  }
 }
