@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
-import { prettyTarget } from './utils/pretty.target';
 import { OrdersModule } from './orders/orders.module';
+import { NatsModule } from './transports/nats.module';
+import { prettyTarget } from './utils/pretty.target';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { OrdersModule } from './orders/orders.module';
       },
     }),
     OrdersModule,
+    NatsModule,
   ],
 })
 export class AppModule {}

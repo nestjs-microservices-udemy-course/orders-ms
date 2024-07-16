@@ -4,7 +4,7 @@ import { Order, PrismaClient } from '@prisma/client';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { firstValueFrom } from 'rxjs';
 import { OrderPaginationDto } from 'src/common/dto';
-import { PRODUCTS_SERVICE } from 'src/config/services';
+import { NATS_SERVICE } from 'src/config/services';
 import { ChangeOrderStatusDto } from './dto/change-order-status.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 
@@ -13,7 +13,7 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
   constructor(
     @InjectPinoLogger(OrdersService.name)
     private readonly logger: PinoLogger,
-    @Inject(PRODUCTS_SERVICE) private readonly productsClient: ClientProxy,
+    @Inject(NATS_SERVICE) private readonly client: ClientProxy,
   ) {
     super();
   }
@@ -28,7 +28,7 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
       const productIds = createOrderDto.items.map((item) => item.productId);
 
       const products = await firstValueFrom(
-        this.productsClient.send({ cmd: 'validate_products' }, productIds),
+        this.client.send({ cmd: 'validate_products' }, productIds),
       );
 
       // calculate total price
@@ -137,7 +137,7 @@ export class OrdersService extends PrismaClient implements OnModuleInit {
     const productIds = order.OrderItem.map((item) => item.productId);
 
     const products = await firstValueFrom(
-      this.productsClient.send({ cmd: 'validate_products' }, productIds),
+      this.client.send({ cmd: 'validate_products' }, productIds),
     );
 
     return {
